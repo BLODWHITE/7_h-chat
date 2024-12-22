@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Sayfası</title>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.0.0/dist/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        #messages {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chat Sayfası</h2>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Mesajınızı yazın" />
+    <button onclick="sendMessage()">Gönder</button>
+
+    <script>
+        const socket = io.connect('http://127.0.0.1:5000');
+
+        // Mesaj gönderme
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            socket.emit('send_message', message);
+            document.getElementById("messageInput").value = ""; // Input'u temizle
+        }
+
+        // Mesaj al
+        socket.on('receive_message', function(message) {
+            const messageElement = document.createElement("div");
+            messageElement.textContent = message;
+            document.getElementById("messages").appendChild(messageElement);
+        });
+    </script>
+</body>
+</html>
